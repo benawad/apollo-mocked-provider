@@ -61,6 +61,87 @@ afterEach(cleanup);
 
 test("TodoForm", async () => {
   const { debug } = render(
+    <ApolloMockedProvider>
+      <Todos />
+    </ApolloMockedProvider>
+  );
+
+  debug();
+  await Promise.resolve();
+  debug();
+});
+```
+
+Test loading:
+
+```
+import React from "react";
+import { render, cleanup } from "@testing-library/react";
+import { Todos } from "./Todos";
+import {
+  ApolloLoadingProvider,
+  ApolloErrorProvider,
+  ApolloMockedProvider
+} from "./test-utils/providers";
+
+afterEach(cleanup);
+
+test("TodoForm", async () => {
+  const { debug } = render(
+    <ApolloLoadingProvider>
+      <Todos />
+    </ApolloLoadingProvider>
+  );
+
+  debug();
+});
+
+```
+
+Test error:
+
+```
+import React from "react";
+import { render, cleanup } from "@testing-library/react";
+import { Todos } from "./Todos";
+import {
+  ApolloLoadingProvider,
+  ApolloErrorProvider,
+  ApolloMockedProvider
+} from "./test-utils/providers";
+
+afterEach(cleanup);
+
+test("TodoForm", async () => {
+  const { debug } = render(
+    <ApolloErrorProvider graphQLErrors={[{ message: "something went wrong" }]}>
+      <Todos />
+    </ApolloErrorProvider>
+  );
+
+  debug();
+  await Promise.resolve()
+  debug();
+});
+
+```
+
+Custom mocks
+
+```
+import React from "react";
+import { render, cleanup } from "@testing-library/react";
+import { Todos } from "./Todos";
+import {
+  ApolloLoadingProvider,
+  ApolloErrorProvider,
+  ApolloMockedProvider
+} from "./test-utils/providers";
+
+afterEach(cleanup);
+
+test("TodoForm", async () => {
+  const { debug } = render(
     <ApolloMockedProvider
       customResolvers={{
         Query: () => ({
