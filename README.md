@@ -45,7 +45,7 @@ Then run that file
 node downloadTypeDefs.js
 ```
 
-## how to use in a test
+## testing
 
 ```
 import React from "react";
@@ -72,7 +72,7 @@ test("TodoForm", async () => {
 });
 ```
 
-Test loading:
+Loading:
 
 ```
 import React from "react";
@@ -98,7 +98,7 @@ test("TodoForm", async () => {
 
 ```
 
-Test error:
+Error:
 
 ```
 import React from "react";
@@ -126,7 +126,7 @@ test("TodoForm", async () => {
 
 ```
 
-Custom mocks
+Custom mocks:
 
 ```
 import React from "react";
