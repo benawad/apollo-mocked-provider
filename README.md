@@ -30,7 +30,7 @@ export const ApolloLoadingProvider = createApolloLoadingProvider(cache);
 
 You can get the `typeDefs` with this helper file
 
-```
+```js
 // downloadTypeDefs.js
 const { fetchTypeDefs } = require("apollo-mocked-provider");
 
@@ -47,7 +47,7 @@ node downloadTypeDefs.js
 
 ## testing
 
-```
+```jsx
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
@@ -74,7 +74,8 @@ test("TodoForm", async () => {
 
 Loading:
 
-``jsx
+```jsx
+
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
@@ -101,6 +102,7 @@ test("TodoForm", async () => {
 Error:
 
 ```jsx
+
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
