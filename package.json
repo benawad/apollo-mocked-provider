@@ -1,6 +1,17 @@
 {
   "name": "apollo-mocked-provider",
   "version": "0.1.5",
+  "description": "Automatically mock GraphQL data with a mocked ApolloProvider",
+  "author": "Ben Awad",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benawad/apollo-mocked-provider.git"
+  },
+  "bugs": {
+    "url": "https://github.com/benawad/apollo-mocked-provider/issues"
+  },
+  "homepage": "https://github.com/benawad/apollo-mocked-provider#readme",
   "main": "dist/index.js",
   "umd:main": "dist/apollo-mocked-provider.umd.production.js",
   "module": "dist/apollo-mocked-provider.es.production.js",
