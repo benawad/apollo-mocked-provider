@@ -12,7 +12,7 @@ yarn add apollo-mocked-provider
 
 ## setup
 
-```
+```jsx
 import {
   createApolloErrorProvider,
   createApolloMockedProvider,
@@ -74,7 +74,7 @@ test("TodoForm", async () => {
 
 Loading:
 
-```
+``jsx
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
@@ -100,7 +100,7 @@ test("TodoForm", async () => {
 
 Error:
 
-```
+```jsx
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
@@ -128,7 +128,7 @@ test("TodoForm", async () => {
 
 Custom mocks:
 
-```
+```jsx
 import React from "react";
 import { render, cleanup } from "@testing-library/react";
 import { Todos } from "./Todos";
