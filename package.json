@@ -11,6 +11,15 @@
   "bugs": {
     "url": "https://github.com/benawad/apollo-mocked-provider/issues"
   },
+  "keywords": [
+    "apollo",
+    "graphql",
+    "react",
+    "react apollo",
+    "react apollo provider",
+    "apollo provider",
+    "mocked apollo provider"
+  ],
   "homepage": "https://github.com/benawad/apollo-mocked-provider#readme",
   "main": "dist/index.js",
   "umd:main": "dist/apollo-mocked-provider.umd.production.js",
