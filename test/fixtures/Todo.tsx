@@ -12,6 +12,16 @@ export const GET_TODOS_QUERY = gql`
   }
 `;
 
+export const GET_TODO_QUERY = gql`
+  query getTodo($id: ID!) {
+    todo(id: $id) {
+      id
+      text
+      createdTs
+    }
+  }
+`;
+
 export const ADD_TODO_MUTATION = gql`
   mutation addTodo($input: AddTodoInput) {
     addTodo(input: $input) {
@@ -21,22 +31,26 @@ export const ADD_TODO_MUTATION = gql`
   }
 `;
 
-interface Todo {
+export interface Todo {
   id: string;
   text: string;
   createdTs: number;
 }
 
-interface Data {
+export interface GetTodos {
   todos: Array<Todo>;
 }
 
-interface AddTodo {
+export interface AddTodo {
   addTodo: Todo;
 }
 
+export interface GetTodo {
+  todo: Todo;
+}
+
 export const Todo = () => (
-  <Query<Data> query={GET_TODOS_QUERY}>
+  <Query<GetTodos> query={GET_TODOS_QUERY}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error!</p>;

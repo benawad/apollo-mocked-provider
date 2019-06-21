@@ -1,10 +1,17 @@
 import React from 'react';
 import { createApolloMockedProvider } from '../src';
 import { readFileSync } from 'fs';
-import { render, waitForDomChange, wait } from '@testing-library/react';
-import { GET_TODOS_QUERY, Todo } from './fixtures/Todo';
+import { render, wait, waitForDomChange } from '@testing-library/react';
+import {
+  GET_TODO_QUERY,
+  GET_TODOS_QUERY,
+  GetTodo,
+  GetTodos,
+  Todo,
+} from './fixtures/Todo';
 import path from 'path';
 import { InMemoryCache } from 'apollo-boost';
+import { Query } from 'react-apollo';
 
 const typeDefs = readFileSync(
   path.join(__dirname, 'fixtures/simpleSchema.graphql'),
@@ -50,6 +57,47 @@ test('works with custom resolvers', async () => {
 
   expect(getByText('First Todo')).toBeTruthy();
   expect(getByText('Second Todo')).toBeTruthy();
+});
+
+test('allows throwing errors within resolvers to mock API errors', async () => {
+  const MockedProvider = createApolloMockedProvider(typeDefs);
+  const { container } = render(
+    <MockedProvider
+      customResolvers={{
+        Query: () => ({
+          todo: () => {
+            throw new Error('Boom');
+          },
+          todos: () => [
+            {
+              text: 'Success',
+            },
+          ],
+        }),
+      }}
+    >
+      <Query<GetTodos> query={GET_TODOS_QUERY}>
+        {({ data }) => (
+          <div>
+            {data && data.todos && data.todos.map(d => d.text)}
+            <Query<GetTodo> query={GET_TODO_QUERY} variables={{ id: 'fake' }}>
+              {({ error }) => {
+                if (error) {
+                  return <div>{JSON.stringify(error)}</div>;
+                } else {
+                  return <div>OKAY</div>;
+                }
+              }}
+            </Query>
+          </div>
+        )}
+      </Query>
+    </MockedProvider>
+  );
+
+  await waitForDomChange();
+  expect(container.textContent).toMatch(/Success/);
+  expect(container.textContent).toMatch(/GraphQL error: Boom/);
 });
 
 describe('caching', () => {
