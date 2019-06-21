@@ -8,16 +8,19 @@ import {
 import ApolloClient from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
 import { ApolloCache } from 'apollo-cache';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  apolloCache: ApolloCache<any>
+  globalCache?: ApolloCache<any>
 ) => ({
   customResolvers = {},
+  cache,
   children,
 }: {
   customResolvers?: any;
   children: React.ReactChild | JSX.Element;
+  cache?: ApolloCache<any>;
 }) => {
   // const mocks = mergeResolvers(globalMocks, props.customResolvers);
 
@@ -30,7 +33,7 @@ export const createApolloMockedProvider = (
 
   const client = new ApolloClient({
     link: new SchemaLink({ schema }),
-    cache: apolloCache,
+    cache: cache || globalCache || new InMemoryCache(),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

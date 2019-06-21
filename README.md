@@ -16,26 +16,23 @@ yarn add apollo-mocked-provider
 import {
   createApolloErrorProvider,
   createApolloMockedProvider,
-  createApolloLoadingProvider
-} from "apollo-mocked-provider";
-import { typeDefs } from "./typeDefs";
-import { InMemoryCache } from "apollo-boost";
+  createApolloLoadingProvider,
+} from 'apollo-mocked-provider';
+import { typeDefs } from './typeDefs';
 
-const cache = new InMemoryCache();
-
-export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, cache);
-export const ApolloErrorProvider = createApolloErrorProvider(cache);
-export const ApolloLoadingProvider = createApolloLoadingProvider(cache);
+export const ApolloMockedProvider = createApolloMockedProvider(typeDefs);
+export const ApolloErrorProvider = createApolloErrorProvider();
+export const ApolloLoadingProvider = createApolloLoadingProvider();
 ```
 
 You can get the `typeDefs` with this helper file
 
 ```js
 // downloadTypeDefs.js
-const { fetchTypeDefs } = require("apollo-mocked-provider");
+const { fetchTypeDefs } = require('apollo-mocked-provider');
 
 (() => {
-  fetchTypeDefs({ uri: "http://localhost:4000/graphql" });
+  fetchTypeDefs({ uri: 'http://localhost:4000/graphql' });
 })();
 ```
 
@@ -48,18 +45,18 @@ node downloadTypeDefs.js
 ## testing
 
 ```jsx
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloMockedProvider>
       <Todos />
@@ -75,19 +72,18 @@ test("TodoForm", async () => {
 Loading:
 
 ```jsx
-
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloLoadingProvider>
       <Todos />
@@ -96,59 +92,56 @@ test("TodoForm", async () => {
 
   debug();
 });
-
 ```
 
 Error:
 
 ```jsx
-
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
-    <ApolloErrorProvider graphQLErrors={[{ message: "something went wrong" }]}>
+    <ApolloErrorProvider graphQLErrors={[{ message: 'something went wrong' }]}>
       <Todos />
     </ApolloErrorProvider>
   );
 
   debug();
-  await Promise.resolve()
+  await Promise.resolve();
   debug();
 });
-
 ```
 
 Custom mocks:
 
 ```jsx
-import React from "react";
-import { render, cleanup } from "@testing-library/react";
-import { Todos } from "./Todos";
+import React from 'react';
+import { render, cleanup } from '@testing-library/react';
+import { Todos } from './Todos';
 import {
   ApolloLoadingProvider,
   ApolloErrorProvider,
-  ApolloMockedProvider
-} from "./test-utils/providers";
+  ApolloMockedProvider,
+} from './test-utils/providers';
 
 afterEach(cleanup);
 
-test("TodoForm", async () => {
+test('TodoForm', async () => {
   const { debug } = render(
     <ApolloMockedProvider
       customResolvers={{
         Query: () => ({
-          todos: () => [{ id: 1, type: "hello from custom mocked data" }]
-        })
+          todos: () => [{ id: 1, type: 'hello from custom mocked data' }],
+        }),
       }}
     >
       <Todos />
@@ -158,5 +151,30 @@ test("TodoForm", async () => {
   debug();
   await Promise.resolve();
   debug();
+});
+```
+
+### Cache
+
+By default, providers will use a new instance of [`InMemoryCache`](https://www.apollographql.com/docs/react/advanced/caching/#inmemorycache), but you can override that at a global or per component level by providing an object that implements `ApolloCache` to the `create*` methods or mocked components respectively.
+
+```jsx
+import { InMemoryCache } from 'apollo-boost';
+
+// global, shared cache
+const globalCache = new InMemoryCache();
+export const ApolloMockedProvider = createApolloMockedProvider(
+  typeDefs,
+  globalCache
+);
+
+test('local cache', async () => {
+  // local, scoped cache
+  const localCache = new InMemoryCache();
+  const { debug } = render(
+    <ApolloMockedProvider cache={localCache}>
+      <Todos />
+    </ApolloMockedProvider>
+  );
 });
 ```
