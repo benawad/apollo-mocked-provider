@@ -1,0 +1,21 @@
+type Query {
+  todos: [Todo]!
+  todo(id: ID!): Todo
+}
+
+type Mutation {
+  addTodo(input: AddTodoInput): Todo
+}
+
+input AddTodoInput {
+  text: String!
+}
+
+type Todo {
+  id: ID!
+  text: String!
+  # A unix timestamp
+  # we can consider adding a custom Date scalar if we really want to
+  # to help exercise mocking custom scalars
+  createdTs: Int
+}
