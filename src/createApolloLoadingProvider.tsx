@@ -3,11 +3,16 @@ import { ApolloLink, Observable } from 'apollo-link';
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloCache } from 'apollo-cache';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
-export const createApolloLoadingProvider = (apolloCache: ApolloCache<any>) => ({
+export const createApolloLoadingProvider = (
+  globalCache?: ApolloCache<any>
+) => ({
   children,
+  cache,
 }: {
   children: React.ReactChild | JSX.Element;
+  cache?: ApolloCache<any>;
 }) => {
   const link = new ApolloLink(() => {
     return new Observable(() => {});
@@ -15,7 +20,7 @@ export const createApolloLoadingProvider = (apolloCache: ApolloCache<any>) => ({
 
   const client = new ApolloClient({
     link,
-    cache: apolloCache,
+    cache: cache || globalCache || new InMemoryCache(),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
