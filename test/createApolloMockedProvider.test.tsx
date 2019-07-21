@@ -188,4 +188,14 @@ describe('caching', () => {
     expect(getByText('First Local Todo')).toBeTruthy();
     expect(getByText('Second Local Todo')).toBeTruthy();
   });
+
+  test('allows user to provide a custom provider', () => {
+    const MyCustomProvider = jest.fn(() => <div />);
+
+    const CustomizedProvider = createApolloMockedProvider(typeDefs, {
+      provider: MyCustomProvider,
+    });
+    render(<CustomizedProvider> </CustomizedProvider>);
+    expect(MyCustomProvider).toHaveBeenCalled();
+  });
 });
