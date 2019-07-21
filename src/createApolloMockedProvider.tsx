@@ -8,12 +8,12 @@ import ApolloClient from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
 import { ApolloCache } from 'apollo-cache';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProviderProps, ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloMockedProviderOptions } from 'ApolloMockedProviderOptions';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  globalCache?: ApolloCache<any>,
-  provider?: React.ComponentType<ApolloProviderProps<any>>
+  { cache: globalCache, provider }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
   cache,
