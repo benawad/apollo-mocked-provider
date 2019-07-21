@@ -42,29 +42,6 @@ Then run that file
 node downloadTypeDefs.js
 ```
 
-### Using apollo-hooks-provider
-
-If you would like to use [react-apollo-hooks](https://github.com/trojanowski/react-apollo-hooks) you can pass a custom
-provider to the `createApollo*` functions:
-
-```jsx
-import { ApolloProvider } from 'react-apollo-hooks';
-
-export const ApolloMockedProvider = createApolloMockedProvider(
-  typeDefs,
-  undefined,
-  ApolloProvider
-);
-export const ApolloErrorProvider = createApolloErrorProvider(
-  undefined,
-  ApolloProvider
-);
-export const ApolloLoadingProvider = createApolloLoadingProvider(
-  undefined,
-  ApolloProvider
-);
-```
-
 ## testing
 
 ```jsx
@@ -199,5 +176,24 @@ test('local cache', async () => {
       <Todos />
     </ApolloMockedProvider>
   );
+});
+```
+
+### Using apollo-hooks-provider
+
+If you would like to use [react-apollo-hooks](https://github.com/trojanowski/react-apollo-hooks) you can pass a custom
+provider to the `createApollo*` functions:
+
+```jsx
+import { ApolloProvider } from 'react-apollo-hooks';
+
+export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, {
+  provider: ApolloProvider,
+});
+export const ApolloErrorProvider = createApolloErrorProvider({
+  provider: ApolloProvider,
+});
+export const ApolloLoadingProvider = createApolloLoadingProvider({
+  provider: ApolloProvider,
 });
 ```
