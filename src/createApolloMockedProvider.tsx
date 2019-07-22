@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ApolloProvider } from 'react-apollo';
 import {
   makeExecutableSchema,
   addMockFunctionsToSchema,
@@ -9,10 +8,12 @@ import ApolloClient from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
 import { ApolloCache } from 'apollo-cache';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloMockedProviderOptions } from 'ApolloMockedProviderOptions';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  globalCache?: ApolloCache<any>
+  { cache: globalCache, provider }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
   cache,
@@ -36,5 +37,6 @@ export const createApolloMockedProvider = (
     cache: cache || globalCache || new InMemoryCache(),
   });
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  const Provider = provider ? provider : ApolloProvider;
+  return <Provider client={client}>{children}</Provider>;
 };

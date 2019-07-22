@@ -13,3 +13,13 @@ test('works with defaults', async () => {
 
   expect(getByText('Loading...')).toBeTruthy();
 });
+
+test('allows user to provide a custom provider', () => {
+  const MyCustomProvider = jest.fn(() => <div />);
+
+  const CustomizedProvider = createApolloLoadingProvider({
+    provider: MyCustomProvider,
+  });
+  render(<CustomizedProvider> </CustomizedProvider>);
+  expect(MyCustomProvider).toHaveBeenCalled();
+});
