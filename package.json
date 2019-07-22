@@ -1,6 +1,6 @@
 {
   "name": "apollo-mocked-provider",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Automatically mock GraphQL data with a mocked ApolloProvider",
   "author": "Ben Awad",
   "license": "MIT",
