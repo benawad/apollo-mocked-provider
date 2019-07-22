@@ -55,7 +55,7 @@ test('works with custom resolvers', async () => {
 describe('caching', () => {
   test('allows users to provide a global cache', async () => {
     const cache = new InMemoryCache();
-    const FirstMockedProvider = createApolloMockedProvider(typeDefs, cache);
+    const FirstMockedProvider = createApolloMockedProvider(typeDefs, { cache });
     cache.writeQuery({
       query: GET_TODOS_QUERY,
       data: {
@@ -89,7 +89,9 @@ describe('caching', () => {
     expect(getByText('First Global Todo')).toBeTruthy();
     expect(getByText('Second Global Todo')).toBeTruthy();
 
-    const SecondMockedProvider = createApolloMockedProvider(typeDefs, cache);
+    const SecondMockedProvider = createApolloMockedProvider(typeDefs, {
+      cache,
+    });
     const { getByText: secondGetByText } = render(
       <SecondMockedProvider>
         <Todo />
@@ -185,5 +187,15 @@ describe('caching', () => {
 
     expect(getByText('First Local Todo')).toBeTruthy();
     expect(getByText('Second Local Todo')).toBeTruthy();
+  });
+
+  test('allows user to provide a custom provider', () => {
+    const MyCustomProvider = jest.fn(() => <div />);
+
+    const CustomizedProvider = createApolloMockedProvider(typeDefs, {
+      provider: MyCustomProvider,
+    });
+    render(<CustomizedProvider> </CustomizedProvider>);
+    expect(MyCustomProvider).toHaveBeenCalled();
   });
 });
