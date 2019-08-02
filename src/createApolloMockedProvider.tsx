@@ -6,6 +6,8 @@ import {
 } from 'graphql-tools';
 import ApolloClient from 'apollo-client';
 import { SchemaLink } from 'apollo-link-schema';
+import { ApolloLink } from 'apollo-link';
+import { onError } from 'apollo-link-error';
 import { ApolloCache } from 'apollo-cache';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
@@ -33,7 +35,7 @@ export const createApolloMockedProvider = (
   addMockFunctionsToSchema({ schema, mocks: customResolvers });
 
   const client = new ApolloClient({
-    link: new SchemaLink({ schema }),
+    link: ApolloLink.from([onError(() => {}), new SchemaLink({ schema })]),
     cache: cache || globalCache || new InMemoryCache(),
   });
 
