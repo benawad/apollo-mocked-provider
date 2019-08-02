@@ -154,6 +154,26 @@ test('TodoForm', async () => {
 });
 ```
 
+Custom mocks mixed with errors (if you need to have some resolver succeed and then some others throw errors):
+
+```jsx
+<MockedProvider
+  customResolvers={{
+    Query: () => ({
+      todo: (_obj: any, args: any) => {
+        console.log(args.id)
+        throw new Error('Boom');
+      },
+      todos: () => [
+        {
+          text: 'Success',
+        },
+      ],
+    }),
+  }}
+>
+```
+
 ### Cache
 
 By default, providers will use a new instance of [`InMemoryCache`](https://www.apollographql.com/docs/react/advanced/caching/#inmemorycache), but you can override that at a global or per component level by providing an object that implements `ApolloCache` to the `create*` methods or mocked components respectively.

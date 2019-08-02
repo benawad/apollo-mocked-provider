@@ -11,7 +11,7 @@ import { onError } from 'apollo-link-error';
 import { ApolloCache } from 'apollo-cache';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloMockedProviderOptions } from 'ApolloMockedProviderOptions';
+import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
