@@ -1,7 +1,12 @@
 import React from 'react';
 import { createApolloMockedProvider } from '../src';
 import { readFileSync } from 'fs';
-import { render, wait, waitForDomChange } from '@testing-library/react';
+import {
+  render,
+  wait,
+  waitForDomChange,
+  fireEvent,
+} from '@testing-library/react';
 import {
   GET_TODO_QUERY,
   GET_TODOS_QUERY,
@@ -59,7 +64,7 @@ test('works with custom resolvers', async () => {
   expect(getByText('Second Todo')).toBeTruthy();
 });
 
-test('allows throwing errors within resolvers to mock API errors', async () => {
+test('allows throwing errors within resolvers to mock Query API errors', async () => {
   const MockedProvider = createApolloMockedProvider(typeDefs);
   const { container } = render(
     <MockedProvider
@@ -97,6 +102,38 @@ test('allows throwing errors within resolvers to mock API errors', async () => {
 
   await waitForDomChange();
   expect(container.textContent).toMatch(/Success/);
+  expect(container.textContent).toMatch(/GraphQL error: Boom/);
+});
+
+test('allows throwing errors within resolvers to mock Mutation API errors', async () => {
+  const MockedProvider = createApolloMockedProvider(typeDefs);
+  const { container, getByText } = render(
+    <MockedProvider
+      customResolvers={{
+        Query: () => ({
+          todos: () => [
+            {
+              text: 'First Todo',
+            },
+            {
+              text: 'Second Todo',
+            },
+          ],
+        }),
+        Mutation: () => ({
+          addTodo: () => {
+            throw new Error('Boom');
+          },
+        }),
+      }}
+    >
+      <Todo />
+    </MockedProvider>
+  );
+
+  await waitForDomChange();
+  fireEvent.click(getByText('Add todo'));
+  await waitForDomChange();
   expect(container.textContent).toMatch(/GraphQL error: Boom/);
 });
 

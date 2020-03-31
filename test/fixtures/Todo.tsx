@@ -70,6 +70,7 @@ export const Todo = () => (
                   )}
                   <button
                     onClick={() => {
+                      console.log('add');
                       addTodo({ variables: { input: { text: 'hardcoded' } } });
                     }}
                   >

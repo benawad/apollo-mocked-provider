@@ -37,6 +37,9 @@ export const createApolloMockedProvider = (
   const client = new ApolloClient({
     link: ApolloLink.from([onError(() => {}), new SchemaLink({ schema })]),
     cache: cache || globalCache || new InMemoryCache(),
+    defaultOptions: {
+      mutate: { errorPolicy: 'all' },
+    },
   });
 
   const Provider = provider ? provider : ApolloProvider;
