@@ -1,6 +1,6 @@
 {
   "name": "apollo-mocked-provider",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Automatically mock GraphQL data with a mocked ApolloProvider",
   "author": "Ben Awad",
   "license": "MIT",
@@ -70,8 +70,9 @@
     "typescript": "^3.5.2"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.2",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link": "^1.2.13",
     "apollo-link-http": "^1.5.14",
     "apollo-link-schema": "^1.2.2",
     "graphql": "^14.3.1",

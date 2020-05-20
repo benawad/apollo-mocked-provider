@@ -17,6 +17,7 @@ import {
 import path from 'path';
 import { InMemoryCache } from 'apollo-boost';
 import { Query } from 'react-apollo';
+import { ApolloLink } from 'apollo-link';
 
 const typeDefs = readFileSync(
   path.join(__dirname, 'fixtures/simpleSchema.graphql'),
@@ -62,6 +63,37 @@ test('works with custom resolvers', async () => {
 
   expect(getByText('First Todo')).toBeTruthy();
   expect(getByText('Second Todo')).toBeTruthy();
+});
+
+test('works with custom links', async () => {
+  const linkAction = jest.fn();
+
+  const MockedProvider = createApolloMockedProvider(typeDefs, {
+    links: ({ cache, schema }) => [
+      new ApolloLink((operation, forward) => {
+        linkAction(cache, schema);
+        return forward(operation);
+      }),
+    ],
+  });
+
+  render(
+    <MockedProvider
+      customResolvers={{
+        Query: () => ({
+          todos: () => [],
+        }),
+      }}
+    >
+      <Todo />
+    </MockedProvider>
+  );
+
+  await waitForDomChange();
+  expect(linkAction).toHaveBeenCalledWith(
+    expect.objectContaining({ addTypename: true }), // assert that the cache is passed
+    expect.objectContaining({ astNode: undefined }) // assert that the schema is passed
+  );
 });
 
 test('allows throwing errors within resolvers to mock Query API errors', async () => {
