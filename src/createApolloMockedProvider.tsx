@@ -15,10 +15,10 @@ import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  { cache: globalCache, provider }: ApolloMockedProviderOptions = {}
+  { cache: globalCache, provider, links }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
-  cache,
+  cache: componentCache,
   children,
 }: {
   customResolvers?: any;
@@ -34,9 +34,17 @@ export const createApolloMockedProvider = (
 
   addMockFunctionsToSchema({ schema, mocks: customResolvers });
 
+  const cache = componentCache || globalCache || new InMemoryCache();
+
+  const customLinks = links ? links({ cache, schema }) : [];
+
   const client = new ApolloClient({
-    link: ApolloLink.from([onError(() => {}), new SchemaLink({ schema })]),
-    cache: cache || globalCache || new InMemoryCache(),
+    link: ApolloLink.from([
+      onError(() => {}),
+      ...customLinks,
+      new SchemaLink({ schema }),
+    ]),
+    cache,
     defaultOptions: {
       mutate: { errorPolicy: 'all' },
     },

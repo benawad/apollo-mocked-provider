@@ -217,3 +217,18 @@ export const ApolloLoadingProvider = createApolloLoadingProvider({
   provider: ApolloProvider,
 });
 ```
+
+### Using links
+
+If you would like to provide custom links in the chain of the mocked provider, you can pass them in the creation function.
+
+```jsx
+export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, {
+  links: ({ cache, schema }) => [
+    myLinkFromCache(cache),
+    myLinkFromSchema(schema),
+  ],
+});
+```
+
+Custom links will be inserted before the terminating link which provides schema mocking.
