@@ -15,7 +15,12 @@ import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  { cache: globalCache, provider, links }: ApolloMockedProviderOptions = {}
+  {
+    cache: globalCache,
+    provider,
+    links,
+    clientResolvers,
+  }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
   cache: componentCache,
@@ -48,6 +53,7 @@ export const createApolloMockedProvider = (
     defaultOptions: {
       mutate: { errorPolicy: 'all' },
     },
+    resolvers: clientResolvers,
   });
 
   const Provider = provider ? provider : ApolloProvider;
