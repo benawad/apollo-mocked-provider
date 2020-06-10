@@ -232,3 +232,13 @@ export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, {
 ```
 
 Custom links will be inserted before the terminating link which provides schema mocking.
+
+### Using client resolvers
+
+If you are using client resolvers to manage local state, you can pass them in the creation function.
+
+```jsx
+export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, {
+  clientResolvers,
+});
+```
