@@ -10,6 +10,7 @@ import {
 import {
   GET_TODO_QUERY,
   GET_TODOS_QUERY,
+  GET_TODOS_WITH_CLIENT_RESOLVER_QUERY,
   GetTodo,
   GetTodos,
   Todo,
@@ -94,6 +95,42 @@ test('works with custom links', async () => {
     expect.objectContaining({ addTypename: true }), // assert that the cache is passed
     expect.objectContaining({ astNode: undefined }) // assert that the schema is passed
   );
+});
+
+test('works with client resolvers', async () => {
+  const clientResolvers = {
+    Todo: {
+      text: () => 'client',
+    },
+  };
+
+  const MockedProvider = createApolloMockedProvider(typeDefs, {
+    clientResolvers,
+  });
+
+  const { getAllByText } = render(
+    <MockedProvider>
+      <Query<GetTodos> query={GET_TODOS_WITH_CLIENT_RESOLVER_QUERY}>
+        {({ loading, error, data }) => {
+          if (loading) return <p>Loading...</p>;
+          if (error) return <p>Error!</p>;
+          return (
+            <>
+              <ul data-testid="todolist">
+                {data!.todos.map((todo, idx) => (
+                  <li key={idx}>{todo.text}</li>
+                ))}
+              </ul>
+            </>
+          );
+        }}
+      </Query>
+    </MockedProvider>
+  );
+
+  await waitForDomChange();
+
+  expect(getAllByText('client')).toHaveLength(2);
 });
 
 test('allows throwing errors within resolvers to mock Query API errors', async () => {
