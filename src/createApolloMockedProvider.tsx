@@ -1,23 +1,21 @@
-import * as React from 'react';
-import {
-  makeExecutableSchema,
-  addMockFunctionsToSchema,
-  ITypeDefinitions,
-} from 'graphql-tools';
-import ApolloClient from 'apollo-client';
-import { SchemaLink } from 'apollo-link-schema';
-import { ApolloLink } from 'apollo-link';
-import { onError } from 'apollo-link-error';
-import { ApolloCache } from 'apollo-cache';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProvider } from 'react-apollo';
+import React, { ReactNode } from 'react';
+import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
+import { addMocksToSchema } from '@graphql-tools/mock';
 import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
+import {
+  ApolloCache,
+  InMemoryCache,
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+} from '@apollo/client';
+import { SchemaLink } from '@apollo/client/link/schema';
+import { onError } from '@apollo/client/link/error';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
   {
     cache: globalCache,
-    provider,
     links,
     clientResolvers,
   }: ApolloMockedProviderOptions = {}
@@ -27,17 +25,20 @@ export const createApolloMockedProvider = (
   children,
 }: {
   customResolvers?: any;
-  children: React.ReactChild | JSX.Element;
+  children: ReactNode;
   cache?: ApolloCache<any>;
 }) => {
   // const mocks = mergeResolvers(globalMocks, props.customResolvers);
 
-  const schema = makeExecutableSchema({
+  const baseSchema = makeExecutableSchema({
     typeDefs,
     resolverValidationOptions: { requireResolversForResolveType: false },
   });
 
-  addMockFunctionsToSchema({ schema, mocks: customResolvers });
+  const schema = addMocksToSchema({
+    schema: baseSchema,
+    mocks: customResolvers,
+  });
 
   const cache = componentCache || globalCache || new InMemoryCache();
 
@@ -56,6 +57,5 @@ export const createApolloMockedProvider = (
     resolvers: clientResolvers,
   });
 
-  const Provider = provider ? provider : ApolloProvider;
-  return <Provider client={client}>{children}</Provider>;
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };

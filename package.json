@@ -1,6 +1,6 @@
 {
   "name": "apollo-mocked-provider",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "description": "Automatically mock GraphQL data with a mocked ApolloProvider",
   "author": "Ben Awad",
   "license": "MIT",
@@ -56,11 +56,9 @@
   },
   "devDependencies": {
     "@testing-library/react": "^8.0.1",
-    "@types/graphql": "^14.2.0",
     "@types/jest": "^24.0.14",
     "@types/react": "^16.8.20",
     "@types/react-dom": "^16.8.4",
-    "apollo-boost": "^0.4.3",
     "husky": "^2.4.1",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.0",
@@ -71,14 +69,8 @@
     "typescript": "^3.5.2"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.6.3",
-    "apollo-client": "^2.6.4",
-    "apollo-link": "^1.2.13",
-    "apollo-link-http": "^1.5.14",
-    "apollo-link-schema": "^1.2.2",
-    "graphql": "^14.3.1",
-    "graphql-tools": "^4.0.4",
-    "isomorphic-unfetch": "^3.0.0",
-    "react-apollo": "^2.5.6"
+    "@apollo/client": "^3.2.0",
+    "graphql": "^15.3.0",
+    "graphql-tools": "^6.2.2"
   }
 }

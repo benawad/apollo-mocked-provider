@@ -1,8 +1,6 @@
-import fetch from 'isomorphic-unfetch';
-import { HttpLink } from 'apollo-link-http';
 import * as fs from 'fs';
 import { printSchema } from 'graphql';
-import { introspectSchema } from 'graphql-tools';
+import { UrlLoader, loadSchema } from 'graphql-tools';
 
 interface FetchTypeDefOptions {
   uri: string;
@@ -15,13 +13,16 @@ export const fetchTypeDefs = async ({
   typescript = true,
   path = `${process.cwd()}/typeDefs.${typescript ? 'ts' : 'js'}`,
 }: FetchTypeDefOptions) => {
-  const link = new HttpLink({ uri, fetch });
-
   console.log('writing typeDefs to: ', path);
+
+  // see https://www.graphql-tools.com/docs/schema-loading for more customization options
+  const schema = await loadSchema(uri, {
+    loaders: [new UrlLoader()],
+  });
 
   fs.writeFileSync(
     path,
     `export const typeDefs = \`
-${printSchema((await introspectSchema(link)) as any).replace(/`/g, '\\`')}\``
+${printSchema(schema).replace(/`/g, '\\`')}\``
   );
 };
