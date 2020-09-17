@@ -199,25 +199,6 @@ test('local cache', async () => {
 });
 ```
 
-### Using apollo-hooks-provider
-
-If you would like to use [react-apollo-hooks](https://github.com/trojanowski/react-apollo-hooks) you can pass a custom
-provider to the `createApollo*` functions:
-
-```jsx
-import { ApolloProvider } from 'react-apollo-hooks';
-
-export const ApolloMockedProvider = createApolloMockedProvider(typeDefs, {
-  provider: ApolloProvider,
-});
-export const ApolloErrorProvider = createApolloErrorProvider({
-  provider: ApolloProvider,
-});
-export const ApolloLoadingProvider = createApolloLoadingProvider({
-  provider: ApolloProvider,
-});
-```
-
 ### Using links
 
 If you would like to provide custom links in the chain of the mocked provider, you can pass them in the creation function.
