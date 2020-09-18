@@ -24,6 +24,7 @@ export const createApolloMockedProvider = (
   children: ReactNode;
   cache?: ApolloCache<any>;
 }) => {
+  //
   // const mocks = mergeResolvers(globalMocks, props.customResolvers);
 
   const baseSchema = makeExecutableSchema({
