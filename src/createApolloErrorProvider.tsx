@@ -1,15 +1,17 @@
 import * as React from 'react';
-import { ApolloLink, Observable } from 'apollo-link';
-import ApolloClient from 'apollo-client';
+import {
+  ApolloLink,
+  Observable,
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  ApolloCache,
+} from '@apollo/client';
 import { GraphQLError } from 'graphql';
-import { ApolloCache } from 'apollo-cache';
-import { ApolloProvider } from 'react-apollo';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
 
 export const createApolloErrorProvider = ({
   cache: globalCache,
-  provider,
 }: ApolloMockedProviderOptions = {}) => ({
   graphQLErrors,
   cache,
@@ -37,6 +39,5 @@ export const createApolloErrorProvider = ({
     cache: cache || globalCache || new InMemoryCache(),
   });
 
-  const Provider = provider ? provider : ApolloProvider;
-  return <Provider client={client}>{children}</Provider>;
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
