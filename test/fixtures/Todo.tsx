@@ -11,16 +11,6 @@ export const GET_TODOS_QUERY = gql`
   }
 `;
 
-export const GET_TODOS_WITH_CLIENT_RESOLVER_QUERY = gql`
-  query getTodosWithClientResolver {
-    todos {
-      id
-      text @client
-      createdTs
-    }
-  }
-`;
-
 export const GET_TODO_QUERY = gql`
   query getTodo($id: ID!) {
     todo(id: $id) {

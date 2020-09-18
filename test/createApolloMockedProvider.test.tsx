@@ -88,31 +88,6 @@ test('works with custom links', async () => {
   );
 });
 
-// This test does not pass.
-// Looks like clientResolvers are deprecated in @apollo/client 3:
-// see https://www.apollographql.com/docs/react/local-state/local-resolvers/
-// test('works with client resolvers', async () => {
-//   const clientResolvers = {
-//     Todo: {
-//       text: () => 'client',
-//     },
-//   };
-
-//   const MockedProvider = createApolloMockedProvider(typeDefs, {
-//     clientResolvers,
-//   });
-
-//   const { getAllByText } = render(
-//     <MockedProvider>
-//       <TodoList />
-//     </MockedProvider>
-//   );
-
-//   await waitForDomChange();
-
-//   expect(getAllByText('client')).toHaveLength(2);
-// });
-
 test('allows throwing errors within resolvers to mock Query API errors', async () => {
   const MockedProvider = createApolloMockedProvider(typeDefs);
   const { container } = render(

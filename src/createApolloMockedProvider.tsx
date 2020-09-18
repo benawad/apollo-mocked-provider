@@ -14,11 +14,7 @@ import { onError } from '@apollo/client/link/error';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  {
-    cache: globalCache,
-    links,
-    clientResolvers,
-  }: ApolloMockedProviderOptions = {}
+  { cache: globalCache, links }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
   cache: componentCache,
@@ -54,7 +50,6 @@ export const createApolloMockedProvider = (
     defaultOptions: {
       mutate: { errorPolicy: 'all' },
     },
-    resolvers: clientResolvers,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
