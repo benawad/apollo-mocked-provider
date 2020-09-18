@@ -7,18 +7,9 @@ import {
   waitForDomChange,
   fireEvent,
 } from '@testing-library/react';
-import {
-  GET_TODO_QUERY,
-  GET_TODOS_QUERY,
-  GET_TODOS_WITH_CLIENT_RESOLVER_QUERY,
-  GetTodo,
-  GetTodos,
-  Todo,
-} from './fixtures/Todo';
+import { GET_TODOS_QUERY, TodoApp, TodoItem, TodoList } from './fixtures/Todo';
 import path from 'path';
-import { InMemoryCache } from 'apollo-boost';
-import { Query } from 'react-apollo';
-import { ApolloLink } from 'apollo-link';
+import { InMemoryCache, ApolloLink } from '@apollo/client';
 
 const typeDefs = readFileSync(
   path.join(__dirname, 'fixtures/simpleSchema.graphql'),
@@ -29,7 +20,7 @@ test('works with defaults', async () => {
   const MockedProvider = createApolloMockedProvider(typeDefs);
   const { getByTestId } = render(
     <MockedProvider>
-      <Todo />
+      <TodoApp />
     </MockedProvider>
   );
 
@@ -56,7 +47,7 @@ test('works with custom resolvers', async () => {
         }),
       }}
     >
-      <Todo />
+      <TodoApp />
     </MockedProvider>
   );
 
@@ -86,7 +77,7 @@ test('works with custom links', async () => {
         }),
       }}
     >
-      <Todo />
+      <TodoApp />
     </MockedProvider>
   );
 
@@ -95,42 +86,6 @@ test('works with custom links', async () => {
     expect.objectContaining({ addTypename: true }), // assert that the cache is passed
     expect.objectContaining({ astNode: undefined }) // assert that the schema is passed
   );
-});
-
-test('works with client resolvers', async () => {
-  const clientResolvers = {
-    Todo: {
-      text: () => 'client',
-    },
-  };
-
-  const MockedProvider = createApolloMockedProvider(typeDefs, {
-    clientResolvers,
-  });
-
-  const { getAllByText } = render(
-    <MockedProvider>
-      <Query<GetTodos> query={GET_TODOS_WITH_CLIENT_RESOLVER_QUERY}>
-        {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p>Error!</p>;
-          return (
-            <>
-              <ul data-testid="todolist">
-                {data!.todos.map((todo, idx) => (
-                  <li key={idx}>{todo.text}</li>
-                ))}
-              </ul>
-            </>
-          );
-        }}
-      </Query>
-    </MockedProvider>
-  );
-
-  await waitForDomChange();
-
-  expect(getAllByText('client')).toHaveLength(2);
 });
 
 test('allows throwing errors within resolvers to mock Query API errors', async () => {
@@ -150,28 +105,16 @@ test('allows throwing errors within resolvers to mock Query API errors', async (
         }),
       }}
     >
-      <Query<GetTodos> query={GET_TODOS_QUERY}>
-        {({ data }) => (
-          <div>
-            {data && data.todos && data.todos.map(d => d.text)}
-            <Query<GetTodo> query={GET_TODO_QUERY} variables={{ id: 'fake' }}>
-              {({ error }) => {
-                if (error) {
-                  return <div>{JSON.stringify(error)}</div>;
-                } else {
-                  return <div>OKAY</div>;
-                }
-              }}
-            </Query>
-          </div>
-        )}
-      </Query>
+      <>
+        <TodoList />
+        <TodoItem id="fake" />
+      </>
     </MockedProvider>
   );
 
   await waitForDomChange();
   expect(container.textContent).toMatch(/Success/);
-  expect(container.textContent).toMatch(/GraphQL error: Boom/);
+  expect(container.textContent).toMatch(/Boom/);
 });
 
 test('allows throwing errors within resolvers to mock Mutation API errors', async () => {
@@ -196,14 +139,14 @@ test('allows throwing errors within resolvers to mock Mutation API errors', asyn
         }),
       }}
     >
-      <Todo />
+      <TodoApp />
     </MockedProvider>
   );
 
   await waitForDomChange();
   fireEvent.click(getByText('Add todo'));
   await waitForDomChange();
-  expect(container.textContent).toMatch(/GraphQL error: Boom/);
+  expect(container.textContent).toMatch(/Boom/);
 });
 
 describe('caching', () => {
@@ -232,7 +175,7 @@ describe('caching', () => {
 
     const { getByText } = render(
       <FirstMockedProvider customResolvers={{}}>
-        <Todo />
+        <TodoApp />
       </FirstMockedProvider>,
       {
         container: document.createElement('div'),
@@ -248,7 +191,7 @@ describe('caching', () => {
     });
     const { getByText: secondGetByText } = render(
       <SecondMockedProvider>
-        <Todo />
+        <TodoApp />
       </SecondMockedProvider>,
       {
         container: document.createElement('div'),
@@ -285,7 +228,7 @@ describe('caching', () => {
 
     const { getByText } = render(
       <FirstMockedProvider cache={cache}>
-        <Todo />
+        <TodoApp />
       </FirstMockedProvider>
     );
 
@@ -335,21 +278,10 @@ describe('caching', () => {
         }}
         cache={cache}
       >
-        <Todo />
+        <TodoApp />
       </FirstMockedProvider>
     );
 
     expect(getByText('First Local Todo')).toBeTruthy();
-    expect(getByText('Second Local Todo')).toBeTruthy();
-  });
-
-  test('allows user to provide a custom provider', () => {
-    const MyCustomProvider = jest.fn(() => <div />);
-
-    const CustomizedProvider = createApolloMockedProvider(typeDefs, {
-      provider: MyCustomProvider,
-    });
-    render(<CustomizedProvider> </CustomizedProvider>);
-    expect(MyCustomProvider).toHaveBeenCalled();
   });
 });
