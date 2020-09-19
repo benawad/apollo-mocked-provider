@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { makeExecutableSchema, ITypeDefinitions } from 'graphql-tools';
 import { addMocksToSchema } from '@graphql-tools/mock';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloMockedProviderOptions } from './ApolloMockedProviderOptions';
 import {
   ApolloCache,
@@ -11,6 +11,7 @@ import {
 } from '@apollo/client';
 import { SchemaLink } from '@apollo/client/link/schema';
 import { onError } from '@apollo/client/link/error';
+import { ITypeDefinitions } from '@graphql-tools/utils';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
