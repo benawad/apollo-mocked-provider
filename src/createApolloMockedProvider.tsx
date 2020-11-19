@@ -15,7 +15,11 @@ import { ITypeDefinitions } from '@graphql-tools/utils';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
-  { cache: globalCache, links }: ApolloMockedProviderOptions = {}
+  {
+    cache: globalCache,
+    links,
+    defaultOptions,
+  }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
   cache: componentCache,
@@ -48,9 +52,7 @@ export const createApolloMockedProvider = (
       new SchemaLink({ schema }),
     ]),
     cache,
-    defaultOptions: {
-      mutate: { errorPolicy: 'all' },
-    },
+    defaultOptions,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

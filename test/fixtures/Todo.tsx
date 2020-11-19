@@ -48,7 +48,7 @@ export interface GetTodo {
   todo: Todo;
 }
 
-export const TodoApp = () => {
+export const TodoApp = ({ onCatch = () => {} } = {}) => {
   const { loading, error, data } = useQuery<GetTodos>(GET_TODOS_QUERY);
 
   const [addTodo, { error: mutationError, data: mutationData }] = useMutation<
@@ -72,7 +72,9 @@ export const TodoApp = () => {
         )}
         <button
           onClick={() => {
-            addTodo({ variables: { input: { text: 'hardcoded' } } });
+            addTodo({ variables: { input: { text: 'hardcoded' } } }).catch(
+              onCatch
+            );
           }}
         >
           Add todo

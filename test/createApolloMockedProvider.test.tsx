@@ -1,12 +1,7 @@
 import React from 'react';
 import { createApolloMockedProvider } from '../src';
 import { readFileSync } from 'fs';
-import {
-  render,
-  wait,
-  waitForDomChange,
-  fireEvent,
-} from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { GET_TODOS_QUERY, TodoApp, TodoItem, TodoList } from './fixtures/Todo';
 import path from 'path';
 import { InMemoryCache, ApolloLink } from '@apollo/client';
@@ -24,7 +19,7 @@ test('works with defaults', async () => {
     </MockedProvider>
   );
 
-  await waitForDomChange();
+  await waitFor(() => {});
   const todoList = getByTestId('todolist');
   expect(todoList).toBeTruthy();
   expect(todoList.children.length).toBeGreaterThanOrEqual(1);
@@ -51,8 +46,7 @@ test('works with custom resolvers', async () => {
     </MockedProvider>
   );
 
-  await waitForDomChange();
-
+  await waitFor(() => {});
   expect(getByText('First Todo')).toBeTruthy();
   expect(getByText('Second Todo')).toBeTruthy();
 });
@@ -81,7 +75,7 @@ test('works with custom links', async () => {
     </MockedProvider>
   );
 
-  await waitForDomChange();
+  await waitFor(() => {});
   expect(linkAction).toHaveBeenCalledWith(
     expect.objectContaining({ addTypename: true }), // assert that the cache is passed
     expect.objectContaining({ astNode: undefined }) // assert that the schema is passed
@@ -112,13 +106,47 @@ test('allows throwing errors within resolvers to mock Query API errors', async (
     </MockedProvider>
   );
 
-  await waitForDomChange();
+  await waitFor(() => {});
   expect(container.textContent).toMatch(/Success/);
   expect(container.textContent).toMatch(/Boom/);
 });
 
 test('allows throwing errors within resolvers to mock Mutation API errors', async () => {
+  const mockOnCatch = jest.fn();
   const MockedProvider = createApolloMockedProvider(typeDefs);
+  const { getByText } = render(
+    <MockedProvider
+      customResolvers={{
+        Query: () => ({
+          todos: () => [
+            {
+              text: 'First Todo',
+            },
+            {
+              text: 'Second Todo',
+            },
+          ],
+        }),
+        Mutation: () => ({
+          addTodo: () => {
+            throw new Error('Boom');
+          },
+        }),
+      }}
+    >
+      <TodoApp onCatch={mockOnCatch} />
+    </MockedProvider>
+  );
+
+  await waitFor(() => getByText('Add todo'));
+  fireEvent.click(getByText('Add todo'));
+  await waitFor(() => expect(mockOnCatch).toHaveBeenCalled());
+});
+
+test('uses defaultOptions when creating Apollo Client instance', async () => {
+  const MockedProvider = createApolloMockedProvider(typeDefs, {
+    defaultOptions: { mutate: { errorPolicy: 'all' } },
+  });
   const { container, getByText } = render(
     <MockedProvider
       customResolvers={{
@@ -143,10 +171,9 @@ test('allows throwing errors within resolvers to mock Mutation API errors', asyn
     </MockedProvider>
   );
 
-  await waitForDomChange();
+  await waitFor(() => getByText('Add todo'));
   fireEvent.click(getByText('Add todo'));
-  await waitForDomChange();
-  expect(container.textContent).toMatch(/Boom/);
+  await waitFor(() => expect(container.textContent).toMatch(/Boom/));
 });
 
 describe('caching', () => {
@@ -182,7 +209,7 @@ describe('caching', () => {
       }
     );
 
-    await wait();
+    await waitFor(() => {});
     expect(getByText('First Global Todo')).toBeTruthy();
     expect(getByText('Second Global Todo')).toBeTruthy();
 
