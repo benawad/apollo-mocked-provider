@@ -1,4 +1,4 @@
-import { ApolloCache, ApolloLink } from '@apollo/client';
+import { ApolloCache, ApolloLink, DefaultOptions } from '@apollo/client';
 import { GraphQLSchema } from 'graphql';
 
 export interface LinksArgs {
@@ -9,4 +9,5 @@ export interface LinksArgs {
 export interface ApolloMockedProviderOptions {
   cache?: ApolloCache<any>;
   links?: (args: LinksArgs) => Array<ApolloLink>;
+  defaultOptions?: DefaultOptions;
 }
