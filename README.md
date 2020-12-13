@@ -4,6 +4,19 @@ Automatically mock GraphQL data with a mocked ApolloProvider
 
 Inspiration: https://www.freecodecamp.org/news/a-new-approach-to-mocking-graphql-data-1ef49de3d491/
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Table of Contents**
+
+- [install](#install)
+- [setup](#setup)
+- [testing](#testing)
+  - [Cache](#cache)
+  - [Using links](#using-links)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## install
 
 ```
