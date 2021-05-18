@@ -12,6 +12,7 @@ import {
 import { SchemaLink } from '@apollo/client/link/schema';
 import { onError } from '@apollo/client/link/error';
 import { ITypeDefinitions } from '@graphql-tools/utils';
+import { mergeResolvers } from '@graphql-tools/merge';
 
 export const createApolloMockedProvider = (
   typeDefs: ITypeDefinitions,
@@ -19,6 +20,7 @@ export const createApolloMockedProvider = (
     cache: globalCache,
     links,
     defaultOptions,
+    globalResolvers,
   }: ApolloMockedProviderOptions = {}
 ) => ({
   customResolvers = {},
@@ -29,7 +31,7 @@ export const createApolloMockedProvider = (
   children: ReactNode;
   cache?: ApolloCache<any>;
 }) => {
-  // const mocks = mergeResolvers(globalMocks, props.customResolvers);
+  const mocks = mergeResolvers([globalResolvers, customResolvers]);
 
   const baseSchema = makeExecutableSchema({
     typeDefs,
@@ -38,7 +40,7 @@ export const createApolloMockedProvider = (
 
   const schema = addMocksToSchema({
     schema: baseSchema,
-    mocks: customResolvers,
+    mocks,
   });
 
   const cache = componentCache || globalCache || new InMemoryCache();
