@@ -10,4 +10,5 @@ export interface ApolloMockedProviderOptions {
   cache?: ApolloCache<any>;
   links?: (args: LinksArgs) => Array<ApolloLink>;
   defaultOptions?: DefaultOptions;
+  globalResolvers?: any;
 }

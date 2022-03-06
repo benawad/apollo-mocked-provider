@@ -25,6 +25,77 @@ test('works with defaults', async () => {
   expect(todoList.children.length).toBeGreaterThanOrEqual(1);
 });
 
+test('works with global resolvers', async () => {
+  const globalResolvers = {
+    Query: () => ({
+      todos: () => [
+        {
+          text: 'First Todo',
+        },
+        {
+          text: 'Second Todo',
+        },
+      ],
+    }),
+  };
+
+  const MockedProvider = createApolloMockedProvider(typeDefs, {
+    globalResolvers,
+  });
+  const { getByText } = render(
+    <MockedProvider>
+      <TodoApp />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {});
+  expect(getByText('First Todo')).toBeTruthy();
+  expect(getByText('Second Todo')).toBeTruthy();
+});
+
+test('custom resolvers override global resolvers that conflict', async () => {
+  const globalResolvers = {
+    Query: () => ({
+      todos: () => [
+        {
+          text: 'First Todo',
+        },
+        {
+          text: 'Second Todo',
+        },
+      ],
+    }),
+  };
+
+  const MockedProvider = createApolloMockedProvider(typeDefs, {
+    globalResolvers,
+  });
+  const { getByText, queryByText } = render(
+    <MockedProvider
+      customResolvers={{
+        Query: () => ({
+          todos: () => [
+            {
+              text: 'Custom First Todo',
+            },
+            {
+              text: 'Custom Second Todo',
+            },
+          ],
+        }),
+      }}
+    >
+      <TodoApp />
+    </MockedProvider>
+  );
+
+  await waitFor(() => {});
+  expect(getByText('Custom First Todo')).toBeTruthy();
+  expect(getByText('Custom Second Todo')).toBeTruthy();
+  expect(queryByText('First Todo')).not.toBeTruthy();
+  expect(queryByText('Second Todo')).not.toBeTruthy();
+});
+
 test('works with custom resolvers', async () => {
   const MockedProvider = createApolloMockedProvider(typeDefs);
   const { getByText } = render(
