@@ -63,7 +63,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-error-boundary": "^3.0.2",
-    "semantic-release": "^17.1.2",
+    "semantic-release": "^19.0.3",
     "tsdx": "^0.14.1",
     "tslib": "^1.10.0",
     "typescript": "^3.5.2"
